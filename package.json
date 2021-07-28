@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "babel-preset-env": "*",
-    "jest": "*"
+    "babel-preset-env": "1.7.0",
+    "jest": "27.0.6"
   },
   "scripts": {
     "test": "node_modules/.bin/jest --coverage"

@@ -5,13 +5,11 @@ npm install
 npm run test
 ```
 
-Goal: Enforce an 80% overall coverage and a 50% single file coverage. 
+**Goal**: Enforce an 80% overall coverage and a 50% single file coverage. 
 
-This example has 4 fully tested files (`sum-0x`) and a fully untested `product.js`.
+This example has four fully tested files (`sum-0x`) and one fully untested file `product.js`.
 
-Note: I have installed Jest globally (`21.2.1`) and locally (`22.4.3`).
-
-In Jest@21.2.1 it works as expected:
+In `jest@21.2.1` it works as expected:
 
 ```
 $ jest --coverage
@@ -40,8 +38,7 @@ Jest: Coverage for lines (0%) does not meet C:\jest-coverage\app\product.js thre
 Jest: Coverage for functions (0%) does not meet C:\jest-coverage\app\product.js threshold (50%)
 ```
 
-
-In Jest@22.4.3 we get this instead:
+In `jest@22.4.3` and `jest@27.0.6` we get this instead:
 
 ```
 $ npm run test
