@@ -5,87 +5,45 @@ npm install
 npm run test
 ```
 
-**Goal**: Enforce an 80% overall coverage and a 50% single file coverage. 
+**Goal**: Enforce an 80% overall coverage **and** a 50% single file coverage. 
 
-This example has four fully tested files (`sum-0x`) and one fully untested file `product.js`.
+This example includes:
+ - four fully tested files (`sum-0x`)
+ - one partially tested file `product.js`
 
-In `jest@21.2.1` it works as expected:
+In `jest@27.0.6`, we get the following:
 
 ```
-$ jest --coverage
- PASS  app\sum-02.test.js
- PASS  app\sum-04.test.js
- PASS  app\sum-01.test.js
- PASS  app\sum-03.test.js
+$ npm run test
 
-Test Suites: 4 passed, 4 total
-Tests:       4 passed, 4 total
+> @ test C:\jest-coverage
+> jest --coverage
+
+ PASS  app/sum-03.test.js
+ PASS  app/product.test.js
+ PASS  app/sum-04.test.js
+ PASS  app/sum-02.test.js
+ PASS  app/sum-01.test.js
+------------|---------|----------|---------|---------|-------------------
+File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------|---------|----------|---------|---------|-------------------
+All files   |   91.67 |       50 |     100 |   91.67 |                   
+ product.js |      75 |       50 |     100 |      75 | 6                 
+ sum-01.js  |     100 |      100 |     100 |     100 |                   
+ sum-02.js  |     100 |      100 |     100 |     100 |                   
+ sum-03.js  |     100 |      100 |     100 |     100 |                   
+ sum-04.js  |     100 |      100 |     100 |     100 |                   
+------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 5 passed, 5 total
+Tests:       5 passed, 5 total
 Snapshots:   0 total
-Time:        3.423s
-Ran all test suites.
-------------|----------|----------|----------|----------|----------------|
-File        |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
-------------|----------|----------|----------|----------|----------------|
-All files   |       80 |      100 |       80 |       80 |                |
- product.js |        0 |      100 |        0 |        0 |            4,7 |
- sum-01.js  |      100 |      100 |      100 |      100 |                |
- sum-02.js  |      100 |      100 |      100 |      100 |                |
- sum-03.js  |      100 |      100 |      100 |      100 |                |
- sum-04.js  |      100 |      100 |      100 |      100 |                |
-------------|----------|----------|----------|----------|----------------|
-Jest: Coverage for statements (0%) does not meet C:\jest-coverage\app\product.js threshold (50%)
-Jest: Coverage for lines (0%) does not meet C:\jest-coverage\app\product.js threshold (50%)
-Jest: Coverage for functions (0%) does not meet C:\jest-coverage\app\product.js threshold (50%)
+Time:        1.109 s
 ```
 
-In `jest@22.4.3` and `jest@27.0.6` we get this instead:
+Jest reports a successful result, even though the overall branch coverage does not fulfill the `global` threshold (80%).
+As discussed, the reason is that Jest uses `global` for all files that are unmatched by other threshold patterns (in this example, there are no other files). In other words, `global` rather means `everythingElse` or `unmatched`.
 
-```
-$ npm run test
+---
 
-> @ test C:\jest-coverage
-> jest --coverage
-
- PASS  app\sum-02.test.js
- PASS  app\sum-04.test.js
- PASS  app\sum-01.test.js
- PASS  app\sum-03.test.js
-------------|----------|----------|----------|----------|-------------------|
-File        |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
-------------|----------|----------|----------|----------|-------------------|
-All files   |       80 |      100 |       80 |       80 |                   |
- product.js |        0 |      100 |        0 |        0 |               2,5 |
- sum-01.js  |      100 |      100 |      100 |      100 |                   |
- sum-02.js  |      100 |      100 |      100 |      100 |                   |
- sum-03.js  |      100 |      100 |      100 |      100 |                   |
- sum-04.js  |      100 |      100 |      100 |      100 |                   |
-------------|----------|----------|----------|----------|-------------------|
-Jest: Coverage data for global was not found.
-Jest: "C:\jest-coverage\app\product.js" coverage threshold for statements (50%) not met: 0%
-Jest: "C:\jest-coverage\app\product.js" coverage threshold for lines (50%) not met: 0%
-Jest: "C:\jest-coverage\app\product.js" coverage threshold for functions (50%) not met: 0%
-```
-
-We get `Coverage data for global was not found` (which is expected as "If the file specified by path is not found, error is returned."). To demontrate the issue a little better, we can delete `product.js` to get a 100% coverage, which will still cause `npm run test` to fail:
-
-```
-$ npm run test
-
-> @ test C:\jest-coverage
-> jest --coverage
-
- PASS  app\sum-02.test.js
- PASS  app\sum-04.test.js
- PASS  app\sum-01.test.js
- PASS  app\sum-03.test.js
------------|----------|----------|----------|----------|-------------------|
-File       |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
------------|----------|----------|----------|----------|-------------------|
-All files  |      100 |      100 |      100 |      100 |                   |
- sum-01.js |      100 |      100 |      100 |      100 |                   |
- sum-02.js |      100 |      100 |      100 |      100 |                   |
- sum-03.js |      100 |      100 |      100 |      100 |                   |
- sum-04.js |      100 |      100 |      100 |      100 |                   |
------------|----------|----------|----------|----------|-------------------|
-Jest: Coverage data for global was not found.
-```
+NOTE: When I first created this repository, I have referenced a previous version `jest@21.2.1` where I considered this issue not to be present. But I don't think this is true. This idea revolved around a `Coverage data for global was not found` warning that I cannot reproduce anymore in the latest version.
